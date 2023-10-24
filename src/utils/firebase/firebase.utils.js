@@ -240,7 +240,6 @@ export const generateProjectList = async (user) => {
 }
 
 
-
 export const retrieveDefectListForProject = async (project, user) => {
 
     try {
@@ -615,3 +614,30 @@ export const getUserNameAddress = async (project, user) => {
         console.log(`Error :${error.code},${error.message}`);
     }
 }
+
+export const getProjectList = async () => {
+    let result = [];
+    let rowcount = 1;
+    try {
+        const dbPL = db; // Ensure dbPL is properly initialized
+        const dbProjectList = collection(dbPL, 'PROPERTIES');       
+        const dbProjectDocs = await getDocs(dbProjectList);
+
+        result = dbProjectDocs.docs.map((doc) => {
+            return {
+                row: rowcount++,
+                address: doc.get('ADDRESS'),
+                area: doc.get('AREA'),
+                imglink: doc.get('IMGLINK'),
+                name: doc.get('NAME'),
+                price: doc.get('PRICE'),
+                size: doc.get('SIZE'),               
+            };
+        });
+    } catch (error) {
+        console.error(`Error: ${error.code}, ${error.message}`);
+        // Handle the error or throw it further if necessary
+    }
+    
+    return result; // Return the result array
+};
